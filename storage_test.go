@@ -28,9 +28,19 @@ func TestEncodePath(t *testing.T) {
 
 func TestSqliteStorage(t *testing.T) {
 	Convey("Given we created sqlite storage", t, func() {
-		storage, err := OpenSqliteStorage(":memory:?parseTime=true")
+		storage, err := openSqliteStorage(":memory:?parseTime=true")
 		So(err, ShouldBeNil)
 		So(storage, ShouldNotBeNil)
+		Convey("Given we requested non-existing thread comments", func() {
+			uri := "hello"
+			t, err := storage.GetThreadedComments(&uri)
+			Convey("There should be no error", func() {
+				So(err, ShouldBeNil)
+			})
+			Convey("Nothing should be returned as result", func() {
+				So(t, ShouldBeNil)
+			})
+		})
 		Convey("Given we created thread", func() {
 			t, err := storage.CreateThread("some uri", "some message")
 			So(err, ShouldBeNil)
@@ -63,12 +73,37 @@ func TestSqliteStorage(t *testing.T) {
 				Convey("Comment should have thread id set", func() {
 					So(res.ThreadID, ShouldNotEqual, 0)
 				})
-				Convey("Path should be empty", func() {
-					So(res.Path, ShouldEqual, "")
+				Convey("Path should not be empty", func() {
+					So(res.Path, ShouldNotEqual, "")
 				})
 				Convey("Should be 0 likes and dislikes", func() {
 					So(res.Likes, ShouldBeZeroValue)
 					So(res.Dislikes, ShouldBeZeroValue)
+				})
+				Convey("Depth should be 0", func() {
+					So(res.Depth, ShouldEqual, 0)
+				})
+
+				Convey("Given we liked the comment", func() {
+					err = storage.LikeComment(res.ID)
+					So(err, ShouldBeNil)
+					Convey("Loaded comment should have increased number of likes", func() {
+						liked, err := storage.GetComment(res.ID)
+						So(err, ShouldBeNil)
+						So(liked, ShouldNotBeNil)
+						So(liked.Likes, ShouldEqual, 1)
+					})
+				})
+
+				Convey("Given we disliked comment", func() {
+					err = storage.DislikeComment(res.ID)
+					So(err, ShouldBeNil)
+					Convey("Loaded comment should have decreased number of likes", func() {
+						disliked, err := storage.GetComment(res.ID)
+						So(err, ShouldBeNil)
+						So(disliked, ShouldNotBeNil)
+						So(disliked.Dislikes, ShouldEqual, 1)
+					})
 				})
 
 				Convey("Given we asked for thread comments", func() {
@@ -76,7 +111,7 @@ func TestSqliteStorage(t *testing.T) {
 						comments *ThreadedComments
 					)
 
-					comments, err = storage.GetThreadedComments(t.URI)
+					comments, err = storage.GetThreadedComments(&t.URI)
 					So(err, ShouldBeNil)
 					So(comments, ShouldNotBeNil)
 
@@ -100,8 +135,25 @@ func TestSqliteStorage(t *testing.T) {
 					So(err, ShouldBeNil)
 					So(replyRes, ShouldNotBeNil)
 					Convey("Path of child comment should not be empty", func() {
-
 						So(replyRes.Path, ShouldNotEqual, "")
+					})
+					Convey("Depth of comment should be 1", func() {
+						So(replyRes.Depth, ShouldEqual, 1)
+					})
+					Convey("Given we retrieved comment again", func() {
+						loaded, err := storage.GetComment(replyRes.ID)
+						Convey("There should be no error", func() {
+							So(err, ShouldBeNil)
+						})
+						Convey("Data should be loaded", func() {
+							So(loaded, ShouldNotBeNil)
+						})
+						Convey("Depth should be 1", func() {
+							So(loaded.Depth, ShouldEqual, 1)
+						})
+						Convey("Parent id should not be null", func() {
+							So(loaded.Parent, ShouldNotBeNil)
+						})
 					})
 				})
 			})

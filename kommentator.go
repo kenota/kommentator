@@ -16,5 +16,3 @@ var ErrThrottle = errors.New("too frequent requests")
 var ErrThreadClosed = errors.New("thread is closed")
 var ErrInternal = errors.New("internal error")
 var ErrCaptchaFailed = errors.New("incorrect captcha")
-
-

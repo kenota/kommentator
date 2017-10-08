@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS comment (
   dislikes INTEGER NOT NULL DEFAULT 0,
   created datetime NOT NULL,
   modified datetime NOT NULL,
+  depth int not null default 0,
+  parent int,
   author VARCHAR,
   email VARCHAR,
   website VARCHAR,

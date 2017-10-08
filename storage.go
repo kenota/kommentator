@@ -1,6 +1,5 @@
 package kommentator
 
-//go:generate go-bindata -pkg migrations -prefix migrations -o migrations/bindata.go migrations/
 
 import (
 	"database/sql"
@@ -27,11 +26,17 @@ type Storage interface {
 	DeleteComment(*Comment) (bool, error)
 	// Retrieve comment by id
 	GetComment(IDType) (*Comment, error)
-	// Retrieve thread by id
-	GetThread(IDType) (*Thread, error)
+	// Retrieve thread by uri
+	GetThread(string) (*Thread, error)
+
+	// Creates thread
+	CreateThread(uri, title string) (*Thread, error)
 
 	// Retrieve comments for thread at specific URI
 	GetThreadedComments(uri *string) (*ThreadedComments, error)
+
+	LikeComment(idType IDType) error
+	DislikeComment(idType IDType) error
 }
 
 // Encodes specified path array to represent materialized path following following following format:
@@ -88,6 +93,79 @@ func copyString(s *string) *string {
 	return &temp
 }
 
+func (s *sqliteStorage) changeLikes(commentId IDType, delta int) error {
+	var field string
+	if delta > 0 {
+		field = "likes"
+	} else {
+		field = "dislikes"
+		delta = -delta
+	}
+
+	res, err := s.Db.Exec(fmt.Sprintf("UPDATE comment SET %s = %s + $1 WHERE id = $2", field, field), delta, commentId)
+	if err != nil {
+		return err
+	}
+	affected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	switch affected {
+	case 0:
+		return errors.New("comment does not exist")
+	case 1:
+		return nil
+	default:
+		panic(fmt.Sprintf("Unexpected number of rows updated on limited update: %d", affected))
+	}
+}
+
+func (s *sqliteStorage) LikeComment(id IDType) error {
+	return s.changeLikes(id, 1)
+}
+
+func (s *sqliteStorage) DislikeComment(id IDType) error {
+	return s.changeLikes(id, -1)
+}
+
+func (s *sqliteStorage) DeleteComment(*Comment) (bool, error) {
+	panic("not implemented yet")
+}
+
+func (s *sqliteStorage) GetComment(id IDType) (*Comment, error) {
+	var (
+		err error
+		res Comment
+	)
+
+	err = s.Db.Get(&res, "SELECT * FROM comment WHERE id = $1", id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (s *sqliteStorage) GetThread(uri string) (*Thread, error) {
+	var (
+		err    error
+		thread Thread
+	)
+
+	err = s.Db.Get(&thread, "SELECT * FROM thread WHERE uri = $1", uri)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &thread, nil
+}
+
 func (s *sqliteStorage) CreateThread(uri, title string) (*Thread, error) {
 	var (
 		id        int64
@@ -116,7 +194,7 @@ func (s *sqliteStorage) CreateThread(uri, title string) (*Thread, error) {
 	return newThread, nil
 }
 
-func (s *sqliteStorage) GetThreadedComments(uri string) (*ThreadedComments, error) {
+func (s *sqliteStorage) GetThreadedComments(uri *string) (*ThreadedComments, error) {
 	var (
 		err    error
 		th     Thread
@@ -125,15 +203,15 @@ func (s *sqliteStorage) GetThreadedComments(uri string) (*ThreadedComments, erro
 
 	err = s.Db.Get(&th, "SELECT * FROM thread WHERE uri = $1", uri)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
-	result.ID = th.ID
-	result.Title = th.Title
-	result.URI = th.URI
-	result.Comments = &[]Comment{}
+	result.Comments = []Comment{}
 
-	err = s.Db.Select(result.Comments, "SELECT * FROM comment WHERE tid = $1 ORDER BY path, created", result.ID)
+	err = s.Db.Select(&result.Comments, "SELECT * FROM comment WHERE tid = $1 ORDER BY path, created", th.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +234,8 @@ func (s *sqliteStorage) AddComment(thread *Thread, parent *Comment, comment *Com
 			RemoteAddr: comment.RemoteAddr,
 			ThreadID:   thread.ID,
 		}
-		now = time.Now()
+		now          = time.Now()
+		loadedParent = &Comment{}
 	)
 
 	newComment.Created = &now
@@ -164,10 +243,6 @@ func (s *sqliteStorage) AddComment(thread *Thread, parent *Comment, comment *Com
 
 	if comment == nil {
 		return nil, errors.New("comment is not passed")
-	}
-
-	if parent != nil {
-		newComment.Path = parent.Path + EncodePathComponent(parent.ID)
 	}
 
 	tx, err = s.Db.Beginx()
@@ -183,10 +258,22 @@ func (s *sqliteStorage) AddComment(thread *Thread, parent *Comment, comment *Com
 		}
 	}()
 
+	if parent != nil {
+		err = tx.Get(loadedParent, "SELECT * FROM comment WHERE id = $1", parent.ID)
+		if err != nil {
+			return nil, err
+		}
+		newComment.Path = parent.Path + EncodePathComponent(parent.ID)
+		newComment.Depth = loadedParent.Depth + 1
+		newComment.Parent = &parent.ID
+	} else {
+		newComment.Path = EncodePathComponent(thread.ID)
+	}
+
 	res, err = tx.NamedExec(`
 		INSERT INTO comment
-			(tid, path, body, remote_addr, created, modified, author, email, website)
-		VALUES (:tid,:path, :body, :remote_addr, :created, :modified, :author, :email, :website)
+			(tid, path, body, remote_addr, created, modified, author, email, website, depth, parent)
+		VALUES (:tid,:path, :body, :remote_addr, :created, :modified, :author, :email, :website, :depth, :parent)
 	`, &newComment)
 	if err != nil {
 		return nil, err
@@ -201,7 +288,7 @@ func (s *sqliteStorage) AddComment(thread *Thread, parent *Comment, comment *Com
 	return &newComment, nil
 }
 
-func OpenSqliteStorage(dbUrl string) (*sqliteStorage, error) {
+func openSqliteStorage(dbUrl string) (*sqliteStorage, error) {
 	var (
 		res = &sqliteStorage{}
 		err error
@@ -215,6 +302,9 @@ func OpenSqliteStorage(dbUrl string) (*sqliteStorage, error) {
 
 	err = res.runMigrations()
 	if err != nil {
+		if err == migrate.ErrNoChange {
+			return res, nil
+		}
 		return nil, err
 	}
 
@@ -251,7 +341,11 @@ func (s *sqliteStorage) runMigrations() error {
 }
 
 //
-//func MustOpenSqliteStorage() Storage {
-//
-//	return &sqliteStorage{}
-//}
+func MustOpenSqliteStorage(path string) Storage {
+	res, err := openSqliteStorage(fmt.Sprintf("%s?parseTime=true", path))
+	if err != nil {
+		panic(err)
+	}
+
+	return res
+}
