@@ -189,7 +189,7 @@ func staticHandler(path string) gin.HandlerFunc {
 	}
 
 	return func(c *gin.Context) {
-		file, err := frontend.Asset("dist/bundle.js")
+		file, err := frontend.Asset(path)
 
 		if err != nil {
 			// TODO: error handling
@@ -222,7 +222,6 @@ func (s *webApi) ListenAndServe(hostport string) {
 		comments *kommentator.ThreadedComments
 		err      error
 	)
-
 
 	storage = kommentator.MustOpenSqliteStorage(s.Config.DbPath)
 
