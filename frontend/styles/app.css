@@ -9,6 +9,10 @@
   padding-bottom: 0;
 }
 
+.k-comments a {
+  cursor: pointer;
+}
+
 .k-comments .root-reply {
   margin-top: 5px;
 }
