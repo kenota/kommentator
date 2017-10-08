@@ -295,7 +295,7 @@ li.comment {
 }
 */
 
-[class^="icon-"]:before, [class*=" icon-"]:before {
+.k-comments [class^="icon-"]:before, .k-comments [class*=" icon-"]:before {
   font-family: "fontello";
   font-style: normal;
   font-weight: normal;
@@ -330,5 +330,5 @@ li.comment {
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
-.icon-thumbs-up:before { content: '\e800'; } /* '' */
-.icon-thumbs-down:before { content: '\e801'; } /* '' */
+.k-comments .icon-thumbs-up:before { content: '\e800'; } /* '' */
+.k-comments .icon-thumbs-down:before { content: '\e801'; } /* '' */
