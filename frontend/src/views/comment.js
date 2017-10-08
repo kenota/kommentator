@@ -17,7 +17,7 @@ export default function Comment ({comment, author, commentActions, authorActions
 	return (
 
 		<li class="comment">
-			<div class="avatar">
+			<div class="k__avatar">
 				<img src={'https://www.gravatar.com/avatar/'+ comment.email + '?s=48'}/>
 			</div>
 			<div class="comment-body">
@@ -32,9 +32,9 @@ export default function Comment ({comment, author, commentActions, authorActions
 			</div>
 			<div class="comment-footer">
 				<ul>
-					<li class="like"><a href="#" onclick={e => e.preventDefault() || commentActions.like({id: comment.id})}><i class="icon-thumbs-up"/></a>{comment.likes}</li>
-					<li class="dislike"><a href="#" onclick={e => e.preventDefault() || commentActions.dislike({id: comment.id})}><i class="icon-thumbs-down"/></a>{comment.dislikes}</li>
-					<li class="reply"><a href="#" onclick={e => e.preventDefault() || commentActions.toggleReplyForm({commentId: comment.id})}>Reply</a></li>
+					<li class="like"><a href="" onclick={e => e.preventDefault() || commentActions.like({id: comment.id})}><i class="icon-thumbs-up"/></a>{comment.likes}</li>
+					<li class="dislike"><a href="" onclick={e => e.preventDefault() || commentActions.dislike({id: comment.id})}><i class="icon-thumbs-down"/></a>{comment.dislikes}</li>
+					<li class="reply"><a href="" onclick={e => e.preventDefault() || commentActions.toggleReplyForm({commentId: comment.id})}>Reply</a></li>
 				</ul>
 			</div>
 			{replyForm}

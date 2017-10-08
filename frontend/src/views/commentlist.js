@@ -15,7 +15,7 @@ export default ({comments}, actions) => {
 		return (<div>Loading</div>)
 	} else {
 		return (<div style="width: 100%">
-				<a href="#" onclick={e => e.preventDefault() || actions.comments.toggleReplyForm({commentId: 'root'})} style="margin-bottom: 10px;">Post comment</a><br/>
+				<a href="" onclick={e => e.preventDefault() || actions.comments.toggleReplyForm({commentId: 'root'})} style="margin-bottom: 10px;">Post comment</a><br/>
 				{replyForm}
 				<ul style="width: 100%;">
 
