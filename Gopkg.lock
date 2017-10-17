@@ -68,6 +68,11 @@
   version = "v0.0.3"
 
 [[projects]]
+  name = "github.com/mattn/go-sqlite3"
+  packages = ["."]
+  revision = "5160b48509cf5c877bc22c11c373f8c7738cdb38"
+
+[[projects]]
   name = "github.com/smartystreets/assertions"
   packages = [".","internal/go-render/render","internal/oglematchers"]
   revision = "9c0ea8acbc1d8ad689f9e6fe0c1fa5838e0cabc2"
@@ -84,6 +89,12 @@
   name = "github.com/ugorji/go"
   packages = ["codec"]
   revision = "54210f4e076c57f351166f0ed60e67d3fca57a36"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  revision = "1087133bc4af3073e18add999345c6ae75918503"
 
 [[projects]]
   branch = "master"
@@ -106,6 +117,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d208d74b7b063e6d2c230a682f06f3287a95954efd9b9b3e452d6117bc36e6ad"
+  inputs-digest = "eb6c5b59329c1eb71e5290cda1ad36a8c439d92683b8677ccc1f61284f4e343d"
   solver-name = "gps-cdcl"
   solver-version = 1

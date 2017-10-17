@@ -20,9 +20,13 @@
 #  name = "github.com/x/y"
 #  version = "2.4.0"
 
-ignored = ["github.com/mattn/go-sqlite3"]
+#ignored = ["github.com/mattn/go-sqlite3"]
 
 
 [[constraint]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
+
+[[constraint]]
+  name = "github.com/mattn/go-sqlite3"
+  revision = "5160b48509cf5c877bc22c11c373f8c7738cdb38"
