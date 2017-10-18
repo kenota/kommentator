@@ -24,6 +24,8 @@ import (
 	"github.com/kenota/kommentator/frontend"
 )
 
+const AFTER_HANDLER_QUEUE_SIZE = 10
+
 func strToPtr(s string) *string {
 	return &s
 }
@@ -40,10 +42,21 @@ type WebApiConfig struct {
 
 type WebServer interface {
 	ListenAndServe(addr string)
+	Storage() kommentator.Storage
+	AddAfterSaver(AfterSaver)
+}
+
+type handlerArgs struct {
+	Ctx     Ctx
+	Comment kommentator.Comment
 }
 
 type webApi struct {
-	Config *WebApiConfig
+	Config  *WebApiConfig
+	storage kommentator.Storage
+
+	afterHandlers []AfterSaver
+	afterQueue    chan handlerArgs
 }
 
 type newComment struct {
@@ -84,9 +97,33 @@ type WebCommentThread struct {
 }
 
 func NewWebApi(config *WebApiConfig) (WebServer, error) {
-	return &webApi{
-		Config: config,
-	}, nil
+	res := &webApi{
+		Config:        config,
+		afterHandlers: []AfterSaver{},
+		afterQueue:    make(chan handlerArgs, AFTER_HANDLER_QUEUE_SIZE),
+	}
+
+	go res.handleAfterSavers()
+
+	return res, nil
+}
+
+func (c *webApi) handleAfterSavers() {
+	for r := range c.afterQueue {
+		for _, m := range c.afterHandlers {
+			if err := m.AfterSave(r.Ctx, r.Comment); err != nil {
+				log.Printf("Error running after handler for comment: %v", err)
+			}
+		}
+	}
+}
+
+func (c *webApi) AddAfterSaver(saver AfterSaver) {
+	c.afterHandlers = append(c.afterHandlers, saver)
+}
+
+func (c *webApi) Storage() kommentator.Storage {
+	return c.storage
 }
 
 func (c *WebComment) MarshalJSON() ([]byte, error) {
@@ -224,6 +261,7 @@ func (s *webApi) ListenAndServe(hostport string) {
 	)
 
 	storage = kommentator.MustOpenSqliteStorage(s.Config.DbPath)
+	s.storage = storage
 
 	router = gin.Default()
 
@@ -348,6 +386,13 @@ func (s *webApi) ListenAndServe(hostport string) {
 			// TODO error handling
 			c.Status(http.StatusInternalServerError)
 			return
+		}
+
+		s.afterQueue <- handlerArgs{
+			Ctx: Ctx{
+				Request: c.Request,
+			},
+			Comment: *reply,
 		}
 
 		c.JSON(http.StatusOK, toWebComment(reply))
