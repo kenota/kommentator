@@ -2,6 +2,24 @@
 
 
 [[projects]]
+  name = "github.com/Masterminds/semver"
+  packages = ["."]
+  revision = "15d8430ab86497c5c0da827b748823945e1cf1e1"
+  version = "v1.4.0"
+
+[[projects]]
+  name = "github.com/Masterminds/sprig"
+  packages = ["."]
+  revision = "efda631a76d70875162cdc25ffa0d0164bf69758"
+  version = "v2.14.0"
+
+[[projects]]
+  name = "github.com/aokoli/goutils"
+  packages = ["."]
+  revision = "3391d3790d23d03408670993e957e8f408993c34"
+  version = "v1.0.1"
+
+[[projects]]
   name = "github.com/gin-contrib/cors"
   packages = ["."]
   revision = "cf4846e6a636a76237a28d9286f163c132e841bc"
@@ -38,6 +56,24 @@
   revision = "b40cd48c38f9a18eb3db20d163bad78de12cf0b7"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/huandu/xstrings"
+  packages = ["."]
+  revision = "d6590c0c31d16526217fa60fbd2067f7afcd78c5"
+
+[[projects]]
+  name = "github.com/imdario/mergo"
+  packages = ["."]
+  revision = "7fe0c75c13abdee74b09fcacef5ea1c6bba6a874"
+  version = "0.2.4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jaytaylor/html2text"
+  packages = ["."]
+  revision = "0ee88d3006305456b84cad14a24b2576f9411965"
+
+[[projects]]
   name = "github.com/jessevdk/go-flags"
   packages = ["."]
   revision = "96dc06278ce32a0e9d957d590bb987c81ee66407"
@@ -50,10 +86,22 @@
   revision = "d9bd385d68c068f1fabb5057e3dedcbcbb039d0f"
 
 [[projects]]
+  name = "github.com/jordan-wright/email"
+  packages = ["."]
+  revision = "a62870b0c368c3c29de27027be67d855e308cc37"
+  version = "v2.2"
+
+[[projects]]
   name = "github.com/jtolds/gls"
   packages = ["."]
   revision = "77f18212c9c7edc9bd6a33d383a7b545ce62f064"
   version = "v4.2.1"
+
+[[projects]]
+  name = "github.com/matcornic/hermes"
+  packages = ["."]
+  revision = "f72fbfe860d779262ed6119515bf01d546af7794"
+  version = "v1.0.1"
 
 [[projects]]
   branch = "master"
@@ -68,9 +116,33 @@
   version = "v0.0.3"
 
 [[projects]]
+  name = "github.com/mattn/go-runewidth"
+  packages = ["."]
+  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
+  version = "v0.0.2"
+
+[[projects]]
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
   revision = "5160b48509cf5c877bc22c11c373f8c7738cdb38"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/olekukonko/tablewriter"
+  packages = ["."]
+  revision = "a7a4c189eb47ed33ce7b35f2880070a0c82a67d4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/russross/blackfriday"
+  packages = ["."]
+  revision = "6d1ef893fcb01b4f50cb6e57ed7df3e2e627b6b2"
+
+[[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/smartystreets/assertions"
@@ -86,14 +158,26 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/ssor/bom"
+  packages = ["."]
+  revision = "6386211fdfcf24c0bfbdaceafd02849ed9a8a509"
+
+[[projects]]
+  branch = "master"
   name = "github.com/ugorji/go"
   packages = ["codec"]
   revision = "54210f4e076c57f351166f0ed60e67d3fca57a36"
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["pbkdf2","scrypt"]
+  revision = "9419663f5a44be8b34ca85f08abc5fe1be11f8a3"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/net"
-  packages = ["context"]
+  packages = ["context","html","html/atom"]
   revision = "1087133bc4af3073e18add999345c6ae75918503"
 
 [[projects]]
@@ -117,6 +201,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eb6c5b59329c1eb71e5290cda1ad36a8c439d92683b8677ccc1f61284f4e343d"
+  inputs-digest = "873bd3bc18115578431a3de5d5c506ee87abdb4dba08da94c64d8a1f37dfcaa0"
   solver-name = "gps-cdcl"
   solver-version = 1
