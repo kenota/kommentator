@@ -12,8 +12,7 @@ for (const i of document.getElementsByClassName("k-comments")) {
 
 	app({
 		state: localState,
-		root: i,
 		actions,
 		view,
-	}).comments.load();
+	}, i).comments.load();
 }
