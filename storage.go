@@ -16,6 +16,7 @@ import (
 	"github.com/mattes/migrate/source/go-bindata"
 
 	_ "github.com/mattn/go-sqlite3"
+	"sync"
 )
 
 // Storage handles storing/retrieving of comments and does not do any access-related checks
@@ -79,8 +80,18 @@ func EncodePathComponent(id IDType) string {
 	return result
 }
 
+// sqlWriteFunc is defining a callback which will is allowed to modify sqlite database. Since go-sqlite3 (and sqlite)
+// supports only one writer, we need to have a dedicated goroutine doing all updates
+type sqlWriteCallback func(func() sqlWriteRes, chan sqlWriteRes)
+
+type sqlWriteRes struct {
+	Res interface{}
+	Err error
+}
+
 type sqliteStorage struct {
 	Db *sqlx.DB
+	WriteLck *sync.Mutex
 }
 
 func copyString(s *string) *string {
@@ -95,6 +106,10 @@ func copyString(s *string) *string {
 
 func (s *sqliteStorage) changeLikes(commentId IDType, delta int) error {
 	var field string
+
+	s.WriteLck.Lock()
+	defer s.WriteLck.Unlock()
+
 	if delta > 0 {
 		field = "likes"
 	} else {
@@ -177,6 +192,9 @@ func (s *sqliteStorage) CreateThread(uri, title string) (*Thread, error) {
 		res sql.Result
 	)
 
+	s.WriteLck.Lock()
+	defer s.WriteLck.Unlock()
+
 	res, err = s.Db.NamedExec(`
 		INSERT INTO thread (uri, title) VALUES (:uri, :title)
 	`, newThread)
@@ -238,6 +256,9 @@ func (s *sqliteStorage) AddComment(thread *Thread, parent *Comment, comment *Com
 		loadedParent = &Comment{}
 	)
 
+	s.WriteLck.Lock()
+	defer s.WriteLck.Unlock()
+
 	newComment.Created = &now
 	newComment.Modified = &now
 
@@ -288,9 +309,13 @@ func (s *sqliteStorage) AddComment(thread *Thread, parent *Comment, comment *Com
 	return &newComment, nil
 }
 
+
+
 func openSqliteStorage(dbUrl string) (*sqliteStorage, error) {
 	var (
-		res = &sqliteStorage{}
+		res = &sqliteStorage{
+			WriteLck: &sync.Mutex{},
+		}
 		err error
 	)
 
