@@ -17,6 +17,8 @@ type Res struct {
 // to any particular framework
 type Ctx struct {
 	Request *http.Request
+	Uri     string
+	Storage kommentator.Storage
 }
 
 // PreSaver is executed before comment is saved to storage

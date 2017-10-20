@@ -391,6 +391,8 @@ func (s *webApi) ListenAndServe(hostport string) {
 		s.afterQueue <- handlerArgs{
 			Ctx: Ctx{
 				Request: c.Request,
+				Uri:     req.Uri,
+				Storage: s.storage,
 			},
 			Comment: *reply,
 		}
