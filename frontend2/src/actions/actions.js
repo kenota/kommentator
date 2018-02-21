@@ -68,19 +68,8 @@ const actions = {
 				const commentMap = {};
 
 
-				// We need to go through the comments and add empty reply to each of them + put them into the map
-				const walk = [data.comments];
-				let first = true;
-				while (walk.length > 0) {
-					for (const c of walk[0]) {
-						c.reply = Object.assign({}, emptyReply);
-						commentMap[c.id] = c;
-						if (c.replies.length > 0) {
-							walk.push(c.replies);
-						}
-					}
-
-					walk.shift();
+				for (const comment of data.comments) {
+					commentMap[comment.id] = comment
 				}
 
 				return {
