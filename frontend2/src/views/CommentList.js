@@ -1,18 +1,17 @@
 import {h} from 'hyperapp'
-
 import ReplyForm from '../components/replyform'
 import Comment from '../components/Comment'
 
+// This is top-level component to render main list of comments and top-level reply form
 export default  (state, actions) => {
 	var body;
-	console.log(state);
 
 	return (
 		<div style={{width: "100%"}}>
-			<a href="" onclick={e => e.preventDefault() || actions.toggleReplyForm()} >Post comment</a><br/>
-		<ReplyForm reply={state.reply} updateReply={actions.updateReply} sendReply={actions.sendReply}/>
+			<a href="" onclick={e => e.preventDefault() || actions.toggleReplyForm(state.rootComment)} >Post comment</a><br/>
+		<ReplyForm comment={state.rootComment} updateReply={actions.updateReply} sendReply={actions.sendReply}/>
 		<ul>
-	{state.list.map(c => { return <Comment comment={c}/> })}
+		{state.commentOrderList.map(id => { return <Comment comment={state.commentMap[id]} toggleReplyForm={actions.toggleReplyForm} updateReply={actions.updateReply} sendReply={actions.sendReply}/> })}
 		</ul>
 	</div>)
 };

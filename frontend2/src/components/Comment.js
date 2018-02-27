@@ -2,14 +2,19 @@ import {h} from 'hyperapp'
 
 import ReplyForm from './replyform'
 
-export default ({comment}) => {
+let Comment =  ({comment, toggleReplyForm, updateReply, sendReply}) => {
 	let children = comment.replies.length === 0 ? <div/> :
 		(
 			<ul class="children">
-				{comment.replies.map(c => { return <Comment comment={c}/> })}
+				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm}/> })}
 			</ul>
 		)
-	let replyForm = comment.showReplyForm ? <ReplyForm comment={comment}/> : <div/>
+	let replyForm
+	if (typeof comment.reply !== 'undefined' && comment.reply.show) {
+		replyForm = <ReplyForm comment={comment} updateReply={updateReply} sendReply={sendReply}/>
+	} else {
+		replyForm = <div/>
+	}
 
 	return (
 		<li class="comment">
@@ -20,7 +25,7 @@ export default ({comment}) => {
 				<div class="comment-body">
 					<div class="comment-header">
 						<div class="comment-author">
-							<b>{comment.author ? comment.author : 'Anonymous'}</b> • <span class="time">1 hour ago</span>
+							<b>{comment.author ? comment.author : 'Anonymous'}</b> • <span class="time">[TODO: timeago]</span>
 						</div>
 					</div>
 					<p>
@@ -33,7 +38,7 @@ export default ({comment}) => {
 				<ul>
 					<li class="like">Like</li>
 					<li class="dislike">Dislike</li>
-					<li class="reply"><a href="" onclick={e => e.preventDefault() || console.log("clicked")}>Reply</a></li>
+					<li class="reply"><a href="" onclick={e => e.preventDefault() || toggleReplyForm(comment)}>Reply</a></li>
 				</ul>
 
 			</div>
@@ -44,3 +49,5 @@ export default ({comment}) => {
 }
 
 
+
+export default Comment

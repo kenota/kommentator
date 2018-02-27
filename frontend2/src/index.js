@@ -12,7 +12,9 @@ for (const i of document.getElementsByClassName("k-comments")) {
 		localState,
 		actions,
 		view,
-	 	i).loadComments({server: i.dataset.kServer, uri:i.dataset.kUri});
-
-
+		i
+	).load({
+		server: i.dataset.kServer,
+		uri:i.dataset.kUri,
+	})
 }

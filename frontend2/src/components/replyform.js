@@ -1,36 +1,35 @@
 import {h} from 'hyperapp';
 import CONSTANTS from "../../../frontend/src/const";
 
-export default ({comment, reply, updateReply, recaptchaKey, sendReply}) => {
-	let body = reply.body || '';
-	let commentId;
+// Conditionally renders reply form
 
-	if (typeof comment === 'undefined') {
-		commentId = "root";
-	} else {
-		commentId = comment.id;
-	}
+
+var blankReply = {
+	show: false,
+	body: "",
+}
+
+export default ({comment, updateReply, sendReply}) => {
+	let reply = comment.reply ? comment.reply : blankReply
 
 	if (!reply.show) {
 		return null;
 	}
 
-
 	return (
 			<div class="reply-form">
 				<textarea placeholder="What do you think?"
-									oninput={e => e.preventDefault() || updateReply({id: reply.id, field: "body", value: e.target.value})}>
-					{body}
+									oninput={e => e.preventDefault() || updateReply({comment:comment, field: "body", value: e.target.value})}>
+					{reply.body || ''}
 				</textarea>
 				<div
-					id={CONSTANTS.RECAPTCHA_CALLBACK +  commentId}
+					id={CONSTANTS.RECAPTCHA_CALLBACK +  comment.id}
 					class="g-recaptcha"
-					data-sitekey={recaptchaKey}
 					data-size="invisible"
-					data-callback={CONSTANTS.RECAPTCHA_CALLBACK + commentId}/>
+					data-callback={CONSTANTS.RECAPTCHA_CALLBACK + comment.id}/>
 
 				<button
 					class="bttn-material-flat bttn-sm bttn-primary bttn-no-outline"
-					onclick={e => e.preventDefault() || sendReply({comment, reply})}>Send</button>
+					onclick={e => e.preventDefault() || sendReply({comment})}>Send</button>
 			</div>)
 }
