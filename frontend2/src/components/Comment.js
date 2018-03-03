@@ -36,7 +36,6 @@ let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updat
 					</p>
 				</div>
 			</div>
-			{comment.body}
 			<div class="comment-footer">
 				<ul>
 					<li class="like"><a href="" onclick={e => e.preventDefault() || react({comment: comment, reaction:'like'})}><i class="icon-thumbs-up"/>{comment.likes}</a></li>

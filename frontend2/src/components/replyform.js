@@ -15,6 +15,7 @@ export default ({comment, author, updateReply, sendReply, updateAuthor, settings
 	let name = author && author.name ? author.name : ""
 	let email = author && author.email ? author.email : ""
 	const recaptchaDivId = getRecaptchaDivId(comment.id)
+	let loader = comment.postingReply ? <div class="loader-container"><div class="loader"/> </div>: ""
 
 	if (!reply.show) {
 		return null;
@@ -22,6 +23,7 @@ export default ({comment, author, updateReply, sendReply, updateAuthor, settings
 
 	return (
 			<div class="reply-form">
+				{loader}
 				<textarea placeholder="What do you think?"
 									oninput={e => e.preventDefault() || updateReply({comment:comment, field: "body", value: e.target.value})}>
 					{reply.body || ''}

@@ -22,7 +22,10 @@ function getAuthorCookieExpireTime() {
 // you need to execute another action to update your state
 const actions = {
 	// sendReply given the comment submits reply to server
-	sendReply: ({comment}) => (state, actions) => {
+	sendReply: ({comment}) => async (state, actions) => {
+		comment.postingReply = true
+		actions.setNewState({commentMap: state.commentMap})
+
 		actions.withRecaptchaScript(() => {
 			if (typeof comment.recaptcha !== 'undefined') {
 				console.log('reseting recaptcha with widget id ', comment.recaptcha)
@@ -44,9 +47,12 @@ const actions = {
 				}
 			})
 			console.log("loaded new recaptcha widget with id ", comment.recaptcha)
-			window[cbId] = () => {
+			window[cbId] = async () => {
 				delete(window[cbId])
-				actions.postReplyToServer({comment})
+				await actions.postReplyToServer({comment})
+				// we need to reload updated comment
+				let updated = state.commentMap[comment.id].postingReply = false
+				actions.setNewState({commentMap: state.commentMap})
 			}
 
 			actions.setNewState({commentMap: state.commentMap})
@@ -60,7 +66,9 @@ const actions = {
 
 	// postReplyToServer makes actual request to server and assumes that reply has all fields populated and all checks
 	// are completed
-	postReplyToServer: ({comment}) => (state, actions) =>  {
+	postReplyToServer: ({comment}) => async (state, actions) =>  {
+
+
 		let response =  fetch(state.server + "api/v1/comment", Object.assign({}, fetchPostCommon, {
 			body: JSON.stringify({
 				body: comment.reply.body,
@@ -81,8 +89,11 @@ const actions = {
 					state.commentMap[comment.id].reply = {}
 				}
 
+				comment.postingReply = false
 				actions.setNewState({rootComment: state.rootComment, commentMap: state.commentMap, commentOrderList: state.commentOrderList})
 			});
+
+
 	},
 
 
