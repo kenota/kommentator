@@ -73,6 +73,33 @@ const actions = {
 		}
 	},
 
+	// reacts sends reaction to specified comment, currently reaction of 'like' and 'dislike' are only one which are supported
+	react: ({comment, reaction}) => async (state, actions) => {
+		let path;
+		if (typeof comment === 'undefined' || typeof comment.id === 'undefined') {
+			console.log("react(): comment or comment id are not present")
+			return
+		}
+		if (reaction === "dislike") {
+			path = "dislike"
+		} else if (reaction === "like") {
+			path = "like"
+		} else {
+			console.log("unexpected reaction: ", reaction)
+			return
+		}
+
+		//TODO: error handling
+		let res = await fetch(state.server + "api/v1/" + path, Object.assign({}, fetchPostCommon, {
+			body: JSON.stringify({
+				id: comment.id,
+			})
+		}))
+
+		state.commentMap[comment.id][path + 's']++
+		actions.setNewState({commentMap: state.commentMap})
+	},
+
 	// ToggleReplyForm toggles display of the reply form for specified comment
 	toggleReplyForm: comment => (state, actions) => {
 		if (typeof comment.reply === 'undefined') {
@@ -102,12 +129,21 @@ const actions = {
 		let comments = await fetch(server + "api/v1/comments?uri=" + encodeURIComponent(uri))
 			.then(resp => resp.json())
 			.then(data => {
-				const commentMap = {};
-				let list = [];
+				const commentMap = []
+				let list = []
+
+				const visitReplies = (map, comments) => {
+					for (const comment of comments) {
+						commentMap[comment.id] = comment
+					}
+				}
 
 				for (const comment of data.comments) {
 					commentMap[comment.id] = comment
 					list.push(comment.id)
+
+					visitReplies(commentMap, comment.replies)
+
 				}
 
 				return {

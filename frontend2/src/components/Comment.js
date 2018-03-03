@@ -2,11 +2,11 @@ import {h} from 'hyperapp'
 
 import ReplyForm from './replyform'
 
-let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updateAuthor}) => {
+let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updateAuthor, react}) => {
 	let children = comment.replies.length === 0 ? <div/> :
 		(
 			<ul class="children">
-				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm} updateAuthor={updateAuthor} author={author}/> })}
+				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm} updateAuthor={updateAuthor} author={author} react={react}/> })}
 			</ul>
 		)
 	let replyForm
@@ -36,8 +36,8 @@ let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updat
 			{comment.body}
 			<div class="comment-footer">
 				<ul>
-					<li class="like">Like</li>
-					<li class="dislike">Dislike</li>
+					<li class="like"><a href="" onclick={e => e.preventDefault() || react({comment: comment, reaction:'like'})}><i class="icon-thumbs-up"/>{comment.likes}</a></li>
+					<li class="dislike"><a href="" onclick={e => e.preventDefault() || react({comment: comment, reaction:'dislike'})}><i class="icon-thumbs-down"/>{comment.dislikes}</a></li>
 					<li class="reply"><a href="" onclick={e => e.preventDefault() || toggleReplyForm(comment)}>Reply</a></li>
 				</ul>
 
