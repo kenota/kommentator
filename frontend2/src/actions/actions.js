@@ -1,5 +1,5 @@
 import CONST from "../const";
-
+import cookies from "../cookies";
 
 // fetchPostCommon specifies default settings which are used with every fetch (https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 // post request
@@ -10,6 +10,10 @@ const fetchPostCommon = {
 	},
 	mode: 'cors',
 };
+
+function getAuthorCookieExpireTime() {
+	return new Date().getTime() + (1000 * 60 * 60 * 24 * 365 * 5)
+}
 
 // Actions specifies a HyperApp actions which are responsible for updating the state based on events
 // Note that are only allowed modify state if you just return an object with some fields in your action. If you want to do some async work,
@@ -58,6 +62,15 @@ const actions = {
 		state.commentMap[comment.id] = comment
 
 		return {commentMap: state.commentMap}
+	},
+
+	// updateAuthor updates specific field inside state.author path
+	updateAuthor: ({field, value}) => (state, actions) => {
+		state.author[field] = value
+		cookies.set(CONST.AUTHOR_COOKIE_NAME, state.author, getAuthorCookieExpireTime())
+		return {
+			author: state.author,
+		}
 	},
 
 	// ToggleReplyForm toggles display of the reply form for specified comment

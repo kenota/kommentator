@@ -2,16 +2,16 @@ import {h} from 'hyperapp'
 
 import ReplyForm from './replyform'
 
-let Comment =  ({comment, toggleReplyForm, updateReply, sendReply}) => {
+let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updateAuthor}) => {
 	let children = comment.replies.length === 0 ? <div/> :
 		(
 			<ul class="children">
-				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm}/> })}
+				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm} updateAuthor={updateAuthor} author={author}/> })}
 			</ul>
 		)
 	let replyForm
 	if (typeof comment.reply !== 'undefined' && comment.reply.show) {
-		replyForm = <ReplyForm comment={comment} updateReply={updateReply} sendReply={sendReply}/>
+		replyForm = <ReplyForm comment={comment} updateReply={updateReply} sendReply={sendReply}  updateAuthor={updateAuthor} author={author}/>
 	} else {
 		replyForm = <div/>
 	}

@@ -9,9 +9,9 @@ export default  (state, actions) => {
 	return (
 		<div style={{width: "100%"}}>
 			<a href="" onclick={e => e.preventDefault() || actions.toggleReplyForm(state.rootComment)} >Post comment</a><br/>
-		<ReplyForm comment={state.rootComment} updateReply={actions.updateReply} sendReply={actions.sendReply}/>
+		<ReplyForm comment={state.rootComment} updateReply={actions.updateReply} sendReply={actions.sendReply} updateAuthor={actions.updateAuthor} author={state.author}/>
 		<ul>
-		{state.commentOrderList.map(id => { return <Comment comment={state.commentMap[id]} toggleReplyForm={actions.toggleReplyForm} updateReply={actions.updateReply} sendReply={actions.sendReply}/> })}
+		{state.commentOrderList.map(id => { return <Comment comment={state.commentMap[id]} toggleReplyForm={actions.toggleReplyForm} updateReply={actions.updateReply} sendReply={actions.sendReply} updateAuthor={actions.updateAuthor} author={state.author}/> })}
 		</ul>
 	</div>)
 };
