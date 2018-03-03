@@ -5,5 +5,7 @@ export default {
 		LOADED: "loaded",
 		LOADING: "loading",
 		UNKNOWN: "unknown",
-	}
+	},
+	RECAPTCHA_SCRIPT_NAME: "recaptcha_script",
+	RECAPTCHA_DIV_PREFIX: "recaptcha_reply_",
 }

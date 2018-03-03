@@ -1,5 +1,7 @@
 import CONST from "../const";
 import cookies from "../cookies";
+import loadjs from "loadjs";
+import {getRecaptchaCallbackName, getRecaptchaDivId} from "../util";
 
 // fetchPostCommon specifies default settings which are used with every fetch (https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 // post request
@@ -20,8 +22,46 @@ function getAuthorCookieExpireTime() {
 // you need to execute another action to update your state
 const actions = {
 	// sendReply given the comment submits reply to server
-	sendReply: ({comment}) => async (state, actions) => {
-		let response = await fetch(state.server + "api/v1/comment", Object.assign({}, fetchPostCommon, {
+	sendReply: ({comment}) => (state, actions) => {
+		actions.withRecaptchaScript(() => {
+			if (typeof comment.recaptcha !== 'undefined') {
+				console.log('reseting recaptcha with widget id ', comment.recaptcha)
+				grecaptcha.reset(comment.recaptcha)
+			}
+
+			const cbId = getRecaptchaCallbackName(comment.id)
+			const divId = getRecaptchaDivId(comment.id)
+
+			comment.recaptcha = grecaptcha.render(divId, {
+				sitekey: state.settings.recaptcha.sitekey,
+				size: 'invisible',
+				callback: cbId,
+				'error-callback': function(e) {
+					console.log("error recaptcha ", e)
+				},
+				'expired-callback': function(e) {
+					console.log('expired-callback', e)
+				}
+			})
+			console.log("loaded new recaptcha widget with id ", comment.recaptcha)
+			window[cbId] = () => {
+				delete(window[cbId])
+				actions.postReplyToServer({comment})
+			}
+
+			actions.setNewState({commentMap: state.commentMap})
+
+
+			grecaptcha.execute(comment.recaptcha)
+		})
+
+		return {}
+	},
+
+	// postReplyToServer makes actual request to server and assumes that reply has all fields populated and all checks
+	// are completed
+	postReplyToServer: ({comment}) => (state, actions) =>  {
+		let response =  fetch(state.server + "api/v1/comment", Object.assign({}, fetchPostCommon, {
 			body: JSON.stringify({
 				body: comment.reply.body,
 				email: state.author.email,
@@ -43,7 +83,6 @@ const actions = {
 
 				actions.setNewState({rootComment: state.rootComment, commentMap: state.commentMap, commentOrderList: state.commentOrderList})
 			});
-
 	},
 
 
@@ -71,6 +110,35 @@ const actions = {
 		return {
 			author: state.author,
 		}
+	},
+
+	// setScriptLoaded makres scriptName as being loaded
+	setScriptLoaded: scriptName => (state, actions) => {
+		state.loadedScripts[scriptName] = true
+
+		return {loadedScripts: state.loadedScripts}
+	},
+
+	// withRecaptchaScript checks if recaptcha script is loaded and then executes func. Note that func can not
+	// return new state, but should use another action method to do that
+	withRecaptchaScript: func => (state, actions) => {
+		if (state.loadedScripts[CONST.RECAPTCHA_SCRIPT_NAME]) {
+			console.log("not loading recaptcha")
+			setTimeout(func, 0)
+		} else {
+			console.log("loading recaptcha")
+			actions.setNewState({loadingScript: true})
+			window[CONST.RECAPTCHA_CALLBACK] = () =>  {
+				state.loadedScripts[CONST.RECAPTCHA_SCRIPT_NAME] = true
+				actions.setNewState({loadingScript: false, loadedScripts: state.loadedScripts})
+				delete window[CONST.RECAPTCHA_CALLBACK]
+
+				func()
+			}
+			loadjs(["https://www.google.com/recaptcha/api.js?onload=" + CONST.RECAPTCHA_CALLBACK + "&render=explicit"])
+		}
+
+		return {}
 	},
 
 	// reacts sends reaction to specified comment, currently reaction of 'like' and 'dislike' are only one which are supported

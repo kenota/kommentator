@@ -5,16 +5,16 @@ import ReplyForm from './replyform'
 
 const timeFormatter = timeago()
 
-let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updateAuthor, react}) => {
+let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updateAuthor, react, settings}) => {
 	let children = comment.replies.length === 0 ? <div/> :
 		(
 			<ul class="children">
-				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm} updateAuthor={updateAuthor} author={author} react={react}/> })}
+				{comment.replies.map(c => { return <Comment comment={c} updateReply={updateReply} sendReply={sendReply} toggleReplyForm={toggleReplyForm} updateAuthor={updateAuthor} author={author} react={react} settings={settings}/> })}
 			</ul>
 		)
 	let replyForm
 	if (typeof comment.reply !== 'undefined' && comment.reply.show) {
-		replyForm = <ReplyForm comment={comment} updateReply={updateReply} sendReply={sendReply}  updateAuthor={updateAuthor} author={author}/>
+		replyForm = <ReplyForm comment={comment} updateReply={updateReply} sendReply={sendReply}  updateAuthor={updateAuthor} author={author} settings={settings}/>
 	} else {
 		replyForm = <div/>
 	}

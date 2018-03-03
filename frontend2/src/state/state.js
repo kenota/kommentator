@@ -22,4 +22,16 @@ export default {
 	rootComment: {
 		_isRootComment: true,
 	},
+
+	// Settings hold system settings
+	settings: {
+		recaptcha: {
+			sitekey: '6LfPnjMUAAAAAJDZP70cFhHl_68jbL-GhB2DWn5H',
+		},
+	},
+
+	// loadedScripts contains a map of on-demand script names which are already loaded
+	loadedScripts: {},
+	// loadingScript indicatse if app is currently loading some external script
+	loadingScript: false,
 };
