@@ -3789,10 +3789,6 @@ jest@^22.1.4:
     import-local "^1.0.0"
     jest-cli "^22.3.0"
 
-jquery@>=1.2.3:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
-
 js-base64@^2.1.9:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.4.3.tgz#2e545ec2b0f2957f41356510205214e98fad6582"
@@ -6045,12 +6041,6 @@ timeago.js@^3.0.2:
   resolved "https://registry.yarnpkg.com/timeago.js/-/timeago.js-3.0.2.tgz#32a67e7c0d887ea42ca588d3aae26f77de5e76cc"
   dependencies:
     "@types/jquery" "^2.0.40"
-
-timeago@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/timeago/-/timeago-1.6.1.tgz#fa9aa932e6cfae1f0c9b62f49d8a6071fdf69c5b"
-  dependencies:
-    jquery ">=1.2.3"
 
 timers-browserify@^2.0.4:
   version "2.0.6"

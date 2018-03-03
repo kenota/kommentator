@@ -1,6 +1,9 @@
 import {h} from 'hyperapp'
+import timeago from "timeago.js"
 
 import ReplyForm from './replyform'
+
+const timeFormatter = timeago()
 
 let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updateAuthor, react}) => {
 	let children = comment.replies.length === 0 ? <div/> :
@@ -25,7 +28,7 @@ let Comment =  ({comment, toggleReplyForm, updateReply, sendReply, author, updat
 				<div class="comment-body">
 					<div class="comment-header">
 						<div class="comment-author">
-							<b>{comment.author ? comment.author : 'Anonymous'}</b> • <span class="time">[TODO: timeago]</span>
+							<b>{comment.author ? comment.author : 'Anonymous'}</b> • <span class="time">{timeFormatter.format(comment.created)}</span>
 						</div>
 					</div>
 					<p>
