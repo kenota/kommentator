@@ -1,17 +1,17 @@
 {
-  "name": "hyperapp-one",
+  "name": "kommentator-frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Frontend for the Kommentator comment system",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack --env production",
-    "wipe": "rm -rf .git && git init && git add . && git commit -m 'initial commit'",
+    "clean": "rm -rf ../web/frontend-files",
     "test": "jest --coverage --no-cache",
     "size": "webpack --json |webpack-bundle-size-analyzer"
   },
-  "author": "Regis Boudinot (selfup)",
-  "license": "MIT",
+  "author": "Egor Ermakov",
+  "license": "Apache-2.0",
   "dependencies": {
     "hyperapp": "^1.1.2",
     "loadjs": "^3.5.2",
