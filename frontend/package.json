@@ -7,7 +7,8 @@
     "start": "webpack-dev-server",
     "build": "webpack --env production",
     "wipe": "rm -rf .git && git init && git add . && git commit -m 'initial commit'",
-    "test": "jest --coverage --no-cache"
+    "test": "jest --coverage --no-cache",
+    "size": "webpack --json |webpack-bundle-size-analyzer"
   },
   "author": "Regis Boudinot (selfup)",
   "license": "MIT",
