@@ -14,14 +14,12 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"mime"
-	"strings"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	"github.com/kenota/kommentator"
-	"github.com/kenota/kommentator/frontend"
+
+	"github.com/GeertJohan/go.rice"
 )
 
 const AFTER_HANDLER_QUEUE_SIZE = 10
@@ -217,30 +215,6 @@ func (s *webApi) validateRecaptcha(challenge, ip string) (bool, error) {
 	return result.Success, nil
 }
 
-func staticHandler(path string) gin.HandlerFunc {
-	var contentType string
-	if strings.HasSuffix(path, ".js") {
-		contentType = mime.TypeByExtension(".js")
-	} else if strings.HasSuffix(path, ".css") {
-		contentType = mime.TypeByExtension(".css")
-	}
-
-	return func(c *gin.Context) {
-		file, err := frontend.Asset(path)
-
-		if err != nil {
-			// TODO: error handling
-			c.Status(http.StatusNotFound)
-			return
-		}
-		if contentType == "" {
-			contentType = http.DetectContentType(file)
-		}
-		c.Header("Content-Type", contentType)
-		c.String(http.StatusOK, string(file))
-	}
-}
-
 //func (c *gin.Context) {
 //	c.Header("Content-Type", "text/javascript")
 //	file, err := frontend.Asset("dist/bundle.js")
@@ -400,8 +374,8 @@ func (s *webApi) ListenAndServe(hostport string) {
 		c.JSON(http.StatusOK, toWebComment(reply))
 	})
 
-	router.GET("/dist/bundle.js", staticHandler("dist/bundle.js"))
-	router.GET("/dist/bundle.css", staticHandler("dist/bundle.css"))
+	box := rice.MustFindBox("frontend-files")
+	router.StaticFS("/dist/", box.HTTPBox())
 
 	router.Run(hostport)
 

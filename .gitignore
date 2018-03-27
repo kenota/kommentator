@@ -20,3 +20,6 @@ migrations/bindata.go
 frontend/bindata.go
 frontend/dist
 frontend/node_modules
+
+web/frontend-files
+build/

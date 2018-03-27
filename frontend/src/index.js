@@ -1,18 +1,20 @@
 import {app} from 'hyperapp';
-import actions from './actions';
-import state from './state';
-import view from './views/commentlist';
+import actions from './actions/actions';
+import state from './state/state';
+import view from './views/CommentList';
 
 for (const i of document.getElementsByClassName("k-comments")) {
-
+    //
 	const localState = Object.assign({}, state);
 
-	localState.comments.uri = i.dataset.kUri;
-	localState.comments.server = i.dataset.kServer;
 
-	app({
-		state: localState,
+	app(
+		localState,
 		actions,
 		view,
-	}, i).comments.load();
+		i
+	).load({
+		server: i.dataset.kServer,
+		uri:i.dataset.kUri,
+	})
 }

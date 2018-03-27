@@ -2,6 +2,15 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/GeertJohan/go.rice"
+  packages = [
+    ".",
+    "embedded"
+  ]
+  revision = "c02ca9a983da5807ddf7d796784928f5be4afd09"
+
+[[projects]]
   name = "github.com/Masterminds/semver"
   packages = ["."]
   revision = "15d8430ab86497c5c0da827b748823945e1cf1e1"
@@ -18,6 +27,12 @@
   packages = ["."]
   revision = "3391d3790d23d03408670993e957e8f408993c34"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/daaku/go.zipexe"
+  packages = ["."]
+  revision = "a5fe2436ffcb3236e175e5149162b41cd28bd27d"
 
 [[projects]]
   name = "github.com/gin-contrib/cors"
@@ -39,7 +54,11 @@
 
 [[projects]]
   name = "github.com/gin-gonic/gin"
-  packages = [".","binding","render"]
+  packages = [
+    ".",
+    "binding",
+    "render"
+  ]
   revision = "d459835d2b077e44f7c9b453505ee29881d5d12d"
   version = "v1.2"
 
@@ -82,7 +101,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
-  packages = [".","reflectx"]
+  packages = [
+    ".",
+    "reflectx"
+  ]
   revision = "d9bd385d68c068f1fabb5057e3dedcbcbb039d0f"
 
 [[projects]]
@@ -98,6 +120,12 @@
   version = "v4.2.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/kardianos/osext"
+  packages = ["."]
+  revision = "ae77be60afb1dcacde03767a8c37337fad28ac14"
+
+[[projects]]
   name = "github.com/matcornic/hermes"
   packages = ["."]
   revision = "f72fbfe860d779262ed6119515bf01d546af7794"
@@ -106,7 +134,13 @@
 [[projects]]
   branch = "master"
   name = "github.com/mattes/migrate"
-  packages = [".","database","database/sqlite3","source","source/go-bindata"]
+  packages = [
+    ".",
+    "database",
+    "database/sqlite3",
+    "source",
+    "source/go-bindata"
+  ]
   revision = "be1b0756056732ed8315516099ed1f3179a15b3a"
 
 [[projects]]
@@ -146,13 +180,21 @@
 
 [[projects]]
   name = "github.com/smartystreets/assertions"
-  packages = [".","internal/go-render/render","internal/oglematchers"]
+  packages = [
+    ".",
+    "internal/go-render/render",
+    "internal/oglematchers"
+  ]
   revision = "9c0ea8acbc1d8ad689f9e6fe0c1fa5838e0cabc2"
   version = "1.7.0"
 
 [[projects]]
   name = "github.com/smartystreets/goconvey"
-  packages = ["convey","convey/gotest","convey/reporting"]
+  packages = [
+    "convey",
+    "convey/gotest",
+    "convey/reporting"
+  ]
   revision = "9e8dc3f972df6c8fcc0375ef492c24d0bb204857"
   version = "1.6.3"
 
@@ -171,13 +213,20 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["pbkdf2","scrypt"]
+  packages = [
+    "pbkdf2",
+    "scrypt"
+  ]
   revision = "9419663f5a44be8b34ca85f08abc5fe1be11f8a3"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","html","html/atom"]
+  packages = [
+    "context",
+    "html",
+    "html/atom"
+  ]
   revision = "1087133bc4af3073e18add999345c6ae75918503"
 
 [[projects]]
@@ -201,6 +250,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "873bd3bc18115578431a3de5d5c506ee87abdb4dba08da94c64d8a1f37dfcaa0"
+  inputs-digest = "3e1b713c452f342f9cf09847515199e0ccd63a14170f54955e2f07b17122fac6"
   solver-name = "gps-cdcl"
   solver-version = 1
