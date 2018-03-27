@@ -1,0 +1,12 @@
+{
+  "name": "admin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/kenota/kommentator.git",
+  "author": "Egor Ermakov <kenota@binarybuffer.com>",
+  "license": "Apache-2",
+  "dependencies": {
+    "elm-live": "^2.7.5",
+    "global": "^4.3.2"
+  }
+}

@@ -1,0 +1,36 @@
+Arguments: 
+  /Users/kenota/.nvm/versions/v8.9.4/bin/node /Users/kenota/.yarn/bin/yarn.js init
+
+PATH: 
+  /Users/kenota/.yarn/bin:/Users/kenota/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/Users/kenota/.rvm/gems/ruby-2.3.0/bin:/Users/kenota/.rvm/gems/ruby-2.3.0@global/bin:/Users/kenota/.rvm/rubies/ruby-2.3.0/bin:/Users/kenota/bin:/opt/local/bin:/opt/local/sbin:/Users/kenota/.sdkman/vertx/current/bin:/Users/kenota/.sdkman/springboot/current/bin:/Users/kenota/.sdkman/lazybones/current/bin:/Users/kenota/.sdkman/jbossforge/current/bin:/Users/kenota/.sdkman/jbake/current/bin:/Users/kenota/.sdkman/groovyserv/current/bin:/Users/kenota/.sdkman/groovy/current/bin:/Users/kenota/.sdkman/griffon/current/bin:/Users/kenota/.sdkman/grails/current/bin:/Users/kenota/.sdkman/gradle/current/bin:/Users/kenota/.sdkman/glide/current/bin:/Users/kenota/.sdkman/gaiden/current/bin:/Users/kenota/.sdkman/crash/current/bin:/Users/kenota/.sdkman/asciidoctorj/current/bin:/Users/kenota/.nvm/versions/v8.9.4/bin:/Users/kenota/soft/sdk/android-sdk-macosx/platform-tools:/Users/kenota/soft/sdk/android-sdk-macosx/tools:/opt/local/bin:/opt/local/sbin:/Users/kenota/dev/go/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin:/Applications/Wireshark.app/Contents/MacOS:/Users/kenota/.rvm/bin
+
+Yarn version: 
+  1.3.2
+
+Node version: 
+  8.9.4
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  No manifest
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: canceled
+      at Interface.<anonymous> (/Users/kenota/.yarn/lib/cli.js:121045:13)
+      at emitNone (events.js:106:13)
+      at Interface.emit (events.js:208:7)
+      at Interface._ttyWrite (readline.js:775:16)
+      at ReadStream.onkeypress (readline.js:160:10)
+      at emitTwo (events.js:126:13)
+      at ReadStream.emit (events.js:214:7)
+      at emitKeys (internal/readline.js:420:14)
+      at emitKeys.next (<anonymous>)
+      at ReadStream.onData (readline.js:1011:36)
