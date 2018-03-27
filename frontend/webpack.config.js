@@ -5,7 +5,8 @@ const webpack = require('webpack');
 
 const plugins = [
   new ExtractTextPlugin({
-    filename: './kommentator.css',
+    // filename: './kommentator.css',
+    filename: './bundle.css',
     allChunks: true,
   }),
   new webpack.optimize.ModuleConcatenationPlugin(),
@@ -21,7 +22,8 @@ module.exports = function webpackStuff(env) {
     ],
     output: {
       filename: 'kommentator.js',
-      path: path.resolve(__dirname, './../web/frontend-files'),
+      // path: path.resolve(__dirname, './../web/frontend-files'),
+      path: path.resolve(__dirname, './bundle.js'),
     },
     module: {
       rules: [{
